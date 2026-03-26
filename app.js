@@ -6,7 +6,7 @@
 // SHA-256 hash of the password "drivearena2026"
 // To change password: generate new hash at https://emn178.github.io/online-tools/sha256.html
 // and replace the string below.
-const PW_HASH = "b2d5c9e2c4a3f1e8d6b7a9f0e3c2d5a8b1c4e7f0a2d5b8c1e4f7a0d3b6c9e2f5";
+const PW_HASH = "d4b65c22efa5f4f2e2e76b2e9bcc63d7f765a8c4cb60ccc4704515a7703bb13d";
 
 // ---- Utility: SHA-256 via Web Crypto API ----
 async function sha256(str) {

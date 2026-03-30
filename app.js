@@ -1,14 +1,10 @@
 /* ============================================================
    DRIVE ARENA – Dashboard App
-   Password: SHA-256 hash, never stored in plaintext
    ============================================================ */
 
-// SHA-256 hash of the password "drivearena2026"
-// To change password: generate new hash at https://emn178.github.io/online-tools/sha256.html
-// and replace the string below.
-const PW_HASH = "7a3f9c2e1b4d6f8a0c2e4f6a8b0d2f4a6c8e0a2b4d6f8c0e2a4b6d8f0c2e4a6b";
 
-// ---- Utility: SHA-256 via Web Crypto API ----
+const PW_HASH = "d4b65c22efa5f4f2e2e76b2e9bcc63d7f765a8c4cb60ccc4704515a7703bb13d";
+
 async function sha256(str) {
   const buf = await crypto.subtle.digest(
     "SHA-256",
@@ -182,5 +178,4 @@ function calcScenario() {
   gEl.style.color  = gewinn >= 0 ? "#22c55e" : "#ef4444";
 }
 
-// ---- Hash helper (run once in browser console to generate a new hash) ----
-// sha256("yournewpassword").then(h => console.log(h));
+

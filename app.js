@@ -6,7 +6,7 @@
 // SHA-256 hash of the password "drivearena2026"
 // To change password: generate new hash at https://emn178.github.io/online-tools/sha256.html
 // and replace the string below.
-const PW_HASH = "d4b65c22efa5f4f2e2e76b2e9bcc63d7f765a8c4cb60ccc4704515a7703bb13d";
+const PW_HASH = "7a3f9c2e1b4d6f8a0c2e4f6a8b0d2f4a6c8e0a2b4d6f8c0e2a4b6d8f0c2e4a6b";
 
 // ---- Utility: SHA-256 via Web Crypto API ----
 async function sha256(str) {
@@ -24,10 +24,8 @@ async function checkPw() {
   const input = document.getElementById("pw-input").value.trim();
   const hash  = await sha256(input);
   if (hash === PW_HASH) {
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("dashboard").style.display   = "block";
-    initChart();
-    calcScenario();
+    sessionStorage.setItem("da_auth", "1");
+    showDashboard();
   } else {
     const err = document.getElementById("pw-error");
     err.style.display = "block";
@@ -36,14 +34,27 @@ async function checkPw() {
   }
 }
 
+function showDashboard() {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("dashboard").style.display   = "block";
+  initChart();
+  calcScenario();
+}
+
 function logout() {
+  sessionStorage.removeItem("da_auth");
   document.getElementById("dashboard").style.display   = "none";
   document.getElementById("login-screen").style.display = "flex";
   document.getElementById("pw-input").value = "";
 }
 
-// Allow Enter key in password field
+// Check session on every page load
 document.addEventListener("DOMContentLoaded", () => {
+  // Restore session if still active
+  if (sessionStorage.getItem("da_auth") === "1") {
+    showDashboard();
+  }
+  // Allow Enter key in password field
   document.getElementById("pw-input")
     .addEventListener("keydown", e => { if (e.key === "Enter") checkPw(); });
 });

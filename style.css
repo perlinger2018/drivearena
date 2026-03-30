@@ -25,19 +25,19 @@
   /* Typography */
   --font-main:     'Segoe UI', Arial, sans-serif;
   --font-logo:     Arial Black, Arial, sans-serif;
-  --fs-xs:         9pt;
-  --fs-sm:         9.5pt;
-  --fs-base:       10.5pt;
-  --fs-md:         11pt;
-  --fs-lg:         13pt;
-  --fs-xl:         15pt;
-  --fs-2xl:        20pt;
-  --fs-3xl:        22pt;
+  --fs-xs:         10pt;
+  --fs-sm:         10.5pt;
+  --fs-base:       12pt;
+  --fs-md:         12.5pt;
+  --fs-lg:         14pt;
+  --fs-xl:         16pt;
+  --fs-2xl:        22pt;
+  --fs-3xl:        24pt;
   --fw-normal:     400;
   --fw-semi:       600;
   --fw-bold:       700;
   --fw-black:      900;
-  --lh:            1.7;
+  --lh:            1.8;
 
   /* Spacing */
   --sp-xs:  4px;

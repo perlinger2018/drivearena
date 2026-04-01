@@ -1,26 +1,93 @@
 /* ============================================================
    DRIVE ARENA – Dashboard App
+   Password: PBKDF2 (100,000 iterations) – never stored in plaintext
+   
+   To generate a new hash, run this in your browser console:
+   
+   (async () => {
+     const pw = "yournewpassword";
+     const salt = "DriveArena2026FR"; // keep this salt fixed
+     const key = await crypto.subtle.importKey(
+       "raw", new TextEncoder().encode(pw),
+       "PBKDF2", false, ["deriveBits"]
+     );
+     const bits = await crypto.subtle.deriveBits(
+       { name:"PBKDF2", salt:new TextEncoder().encode("DriveArena2026FR"),
+         iterations:100000, hash:"SHA-256" },
+       key, 256
+     );
+     console.log(Array.from(new Uint8Array(bits))
+       .map(b=>b.toString(16).padStart(2,"0")).join(""));
+   })();
+   
    ============================================================ */
 
+// PBKDF2 derived key of the password
+// Salt: "DriveArena2026FR" (fixed, embedded – changes the hash space)
+const PW_HASH = "3abe28056b00f1587c7e1a34e3b63152fc13d41ad4b4f6d390a70141cbe5e549";
+const PW_SALT = "DriveArena2026FR";
+const PW_ITER = 100000;
 
-const PW_HASH = "d4b65c22efa5f4f2e2e76b2e9bcc63d7f765a8c4cb60ccc4704515a7703bb13d";
-
-async function sha256(str) {
-  const buf = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(str)
+// ---- Utility: PBKDF2 via Web Crypto API ----
+async function pbkdf2Hash(password) {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"]
   );
-  return Array.from(new Uint8Array(buf))
+  const bits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: enc.encode(PW_SALT),
+      iterations: PW_ITER,
+      hash: "SHA-256"
+    },
+    keyMaterial,
+    256
+  );
+  return Array.from(new Uint8Array(bits))
     .map(b => b.toString(16).padStart(2, "0"))
     .join("");
+}
+
+// ---- Formspree Login Notification ----
+// 1. Go to https://formspree.io → create free account
+// 2. Create new form → copy your form ID (e.g. "xpwzabcd")
+// 3. Replace YOUR_FORMSPREE_ID below with your actual form ID
+const FORMSPREE_ID = "YOUR_FORMSPREE_ID";
+
+async function notifyLogin() {
+  if (FORMSPREE_ID === "YOUR_FORMSPREE_ID") return; // skip if not configured
+  try {
+    await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: "DRIVE ARENA Portal – Login",
+        time: new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" }),
+        userAgent: navigator.userAgent,
+        referrer: document.referrer || "direkt"
+      })
+    });
+  } catch(e) { /* silent fail – don't block login */ }
 }
 
 // ---- Login ----
 async function checkPw() {
   const input = document.getElementById("pw-input").value.trim();
-  const hash  = await sha256(input);
+  // Show subtle loading state while PBKDF2 runs (takes ~300ms intentionally)
+  const btn = document.querySelector(".login-btn");
+  btn.textContent = "…";
+  btn.disabled = true;
+  const hash = await pbkdf2Hash(input);
+  btn.textContent = "ZUGANG";
+  btn.disabled = false;
   if (hash === PW_HASH) {
-    sessionStorage.setItem("da_auth", "1");
+    localStorage.setItem("da_auth", "1");
+    notifyLogin();
     showDashboard();
   } else {
     const err = document.getElementById("pw-error");
@@ -31,28 +98,25 @@ async function checkPw() {
 }
 
 function showDashboard() {
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("dashboard").style.display   = "block";
-  initChart();
-  calcScenario();
+  window.location.replace("dashboard.html");
 }
 
 function logout() {
-  sessionStorage.removeItem("da_auth");
-  document.getElementById("dashboard").style.display   = "none";
-  document.getElementById("login-screen").style.display = "flex";
-  document.getElementById("pw-input").value = "";
+  localStorage.removeItem("da_auth");
+  window.location.replace("index.html");
 }
 
-// Check session on every page load
+// Check session on page load (only relevant on login page)
 document.addEventListener("DOMContentLoaded", () => {
-  // Restore session if still active
-  if (sessionStorage.getItem("da_auth") === "1") {
-    showDashboard();
+  const pwInput = document.getElementById("pw-input");
+  if (pwInput) {
+    pwInput.addEventListener("keydown", e => { if (e.key === "Enter") checkPw(); });
   }
-  // Allow Enter key in password field
-  document.getElementById("pw-input")
-    .addEventListener("keydown", e => { if (e.key === "Enter") checkPw(); });
+  // Dashboard init (only runs if canvas exists)
+  if (document.getElementById("liqChart")) {
+    initChart();
+    calcScenario();
+  }
 });
 
 // ---- Navigation ----
@@ -178,4 +242,5 @@ function calcScenario() {
   gEl.style.color  = gewinn >= 0 ? "#22c55e" : "#ef4444";
 }
 
-
+// ---- Hash helper (run once in browser console to generate a new hash) ----
+// sha256("yournewpassword").then(h => console.log(h));

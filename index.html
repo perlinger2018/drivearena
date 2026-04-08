@@ -1,32 +1,633 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DRIVE ARENA – Zugang</title>
-  <link rel="stylesheet" href="style.css">
-  <script>
-    // If already logged in, redirect immediately to dashboard
-    if (localStorage.getItem("da_auth") === "1") {
-      window.location.replace("dashboard.html");
-    }
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRIVE ARENA – Coming Soon</title>
+<style>
+/* ── Variables ── */
+:root {
+  --accent:    #CC0000;
+  --accent-d:  #990000;
+  --radius:    10px;
+  --trans:     0.3s ease;
+}
+.light {
+  --bg:        #f8f8f6;
+  --bg2:       #ffffff;
+  --bg3:       #f0efeb;
+  --border:    #e0ddd8;
+  --text:      #1a1a1a;
+  --text2:     #555;
+  --text3:     #888;
+  --card-bg:   #ffffff;
+  --nav-bg:    #ffffff;
+  --hero-text: #1a1a1a;
+  --tag-bg:    #f0efeb;
+  --tag-text:  #555;
+  --input-bg:  #f5f5f3;
+  --overlay-bg:rgba(0,0,0,0.5);
+}
+.dark {
+  --bg:        #0a0a0a;
+  --bg2:       #141414;
+  --bg3:       #1a1a1a;
+  --border:    #222;
+  --text:      #f0f0f0;
+  --text2:     #aaa;
+  --text3:     #666;
+  --card-bg:   #141414;
+  --nav-bg:    #111;
+  --hero-text: #ffffff;
+  --tag-bg:    #1e1e1e;
+  --tag-text:  #888;
+  --input-bg:  #1e1e1e;
+  --overlay-bg:rgba(0,0,0,0.75);
+}
+
+/* ── Reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);transition:background var(--trans),color var(--trans);line-height:1.7;font-size:16px;}
+a{color:var(--accent);text-decoration:none;}
+strong{font-weight:600;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:var(--nav-bg);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;justify-content:space-between;transition:background var(--trans);}
+.nav-logo{display:flex;flex-direction:column;align-items:flex-start;line-height:1;}
+.nav-logo .drive-row{display:flex;align-items:baseline;}
+.nav-logo .d{color:var(--accent);font-size:16pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:4px;animation:fadeSlideD 0.7s ease both;}
+.nav-logo .r{color:var(--text);font-size:16pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:4px;animation:fadeSlide 0.7s 0.15s ease both;}
+.nav-logo .sub{font-size:7.5pt;letter-spacing:10px;color:var(--text3);animation:fadeSlide 0.6s 0.35s ease both;}
+.nav-logo .nav-line{height:1.5px;width:0;background:linear-gradient(to right,var(--accent),transparent);animation:lineGrow 0.6s 0.55s ease forwards;}
+@keyframes fadeSlideD{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:translateX(0)}}
+@keyframes lineGrow{from{width:0}to{width:100%}}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.lang-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:11px;transition:all var(--trans);}
+.lang-btn.active,.lang-btn:hover{border-color:var(--accent);color:var(--accent);}
+.theme-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:5px 14px;border-radius:20px;cursor:pointer;font-size:11px;transition:all var(--trans);}
+.theme-btn:hover{border-color:var(--border);color:var(--text);}
+.investor-btn{background:var(--accent);color:#fff;border:none;padding:7px 18px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.5px;transition:background var(--trans);}
+.investor-btn:hover{background:var(--accent-d);}
+
+/* ── HERO ── */
+.hero{padding:80px 40px 64px;text-align:center;max-width:800px;margin:0 auto;}
+.hero-badge{display:inline-block;background:var(--accent);color:#fff;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:24px;text-transform:uppercase;}
+.hero h1{font-size:clamp(28px,5vw,52px);font-weight:800;color:var(--hero-text);line-height:1.15;margin-bottom:20px;}
+.hero h1 span{color:var(--accent);}
+.hero p{font-size:18px;color:var(--text2);max-width:580px;margin:0 auto 32px;}
+.hero-line{width:60px;height:3px;background:var(--accent);margin:0 auto 32px;border-radius:2px;}
+.countdown{display:flex;gap:24px;justify-content:center;margin-bottom:40px;}
+.cd-item{text-align:center;}
+.cd-num{font-size:32px;font-weight:800;color:var(--accent);line-height:1;}
+.cd-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+
+/* ── SECTION ── */
+section{padding:64px 40px;max-width:1000px;margin:0 auto;}
+.section-label{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;}
+.section-title{font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--text);margin-bottom:12px;}
+.section-sub{font-size:16px;color:var(--text2);max-width:560px;margin-bottom:40px;}
+.divider{border:none;border-top:1px solid var(--border);margin:0;}
+
+/* ── AUDIENCE CARDS ── */
+.audience-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
+.aud-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;transition:border-color var(--trans),transform var(--trans);}
+.aud-card:hover{border-color:var(--accent);transform:translateY(-3px);}
+.aud-icon{font-size:28px;margin-bottom:12px;}
+.aud-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.aud-desc{font-size:13px;color:var(--text2);line-height:1.6;}
+
+/* ── HOW IT WORKS ── */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;}
+.step{text-align:center;padding:20px;}
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.step-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.step-desc{font-size:13px;color:var(--text2);}
+
+/* ── SURVEY ── */
+.survey-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:40px;}
+.survey-q{margin-bottom:32px;}
+.survey-q h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:14px;}
+.options{display:flex;flex-wrap:wrap;gap:10px;}
+.opt-btn{background:var(--tag-bg);border:2px solid var(--border);color:var(--text2);padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.2s;}
+.opt-btn:hover,.opt-btn.selected{background:var(--accent);border-color:var(--accent);color:#fff;}
+.opt-btn.selected{font-weight:600;}
+.survey-progress{display:flex;gap:6px;margin-bottom:28px;}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.3s;}
+.prog-dot.done{background:var(--accent);}
+
+/* ── REGISTRATION ── */
+.reg-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:40px;max-width:560px;margin:0 auto;}
+.reg-box h3{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.reg-box p{font-size:14px;color:var(--text2);margin-bottom:24px;}
+.form-row{display:flex;flex-direction:column;gap:12px;}
+.form-input{width:100%;padding:12px 16px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--accent);}
+.audience-select{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;}
+.aud-opt{background:var(--tag-bg);border:2px solid var(--border);color:var(--text2);padding:8px 12px;border-radius:6px;cursor:pointer;font-size:13px;text-align:center;transition:all 0.2s;}
+.aud-opt:hover,.aud-opt.sel{background:var(--accent);border-color:var(--accent);color:#fff;}
+.form-label{font-size:12px;color:var(--text3);margin-bottom:4px;}
+.submit-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s;margin-top:8px;}
+.submit-btn:hover{background:var(--accent-d);}
+.success-msg{display:none;text-align:center;padding:20px;color:var(--accent);font-weight:600;font-size:15px;}
+
+/* ── LOGIN OVERLAY ── */
+.overlay{display:none;position:fixed;inset:0;background:var(--overlay-bg);z-index:500;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.overlay-box{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:48px 40px;width:360px;text-align:center;position:relative;}
+.overlay-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;line-height:1;}
+.overlay-logo{margin-bottom:24px;}
+.overlay-logo .d{color:var(--accent);font-size:24pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:5px;}
+.overlay-logo .r{color:var(--text);font-size:24pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:5px;}
+.overlay-logo .sub{font-size:8pt;letter-spacing:10px;color:var(--text3);display:block;margin-top:2px;}
+.overlay-logo .line{height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent);margin-top:6px;}
+.overlay h2{font-size:13px;color:var(--text3);font-weight:400;margin-bottom:24px;}
+.overlay input{width:100%;padding:12px 16px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;text-align:center;letter-spacing:4px;margin-bottom:12px;outline:none;transition:border-color 0.2s;}
+.overlay input:focus{border-color:var(--accent);}
+.overlay-btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:background 0.2s;}
+.overlay-btn:hover{background:var(--accent-d);}
+.overlay-error{color:var(--accent);font-size:11px;margin-top:10px;display:none;}
+.overlay-note{font-size:10px;color:var(--text3);margin-top:16px;}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;text-align:center;}
+footer .f-logo{font-size:13px;color:var(--text3);margin-bottom:8px;}
+footer .f-info{font-size:12px;color:var(--text3);}
+footer .f-accent{color:var(--accent);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  nav{padding:12px 20px;}
+  .hero{padding:48px 20px 40px;}
+  section{padding:40px 20px;}
+  .survey-box,.reg-box{padding:24px 20px;}
+  .overlay-box{width:calc(100% - 40px);padding:32px 24px;}
+  .audience-select{grid-template-columns:1fr 1fr;}
+}
+</style>
 </head>
-<body>
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">
-      <div><span class="logo-d">D</span><span class="logo-rest">RIVE</span></div>
-      <span class="logo-sub">ARENA</span>
-      <div class="logo-line"></div>
-    </div>
-    <h2>Investor &amp; Finanzierungsportal</h2>
-    <input type="password" id="pw-input" placeholder="Zugangscode" autocomplete="off">
-    <button class="login-btn" onclick="checkPw()">ZUGANG</button>
-    <div class="login-error" id="pw-error">Falscher Zugangscode</div>
-    <div class="login-note">Vertraulich · Nur für autorisierte Personen</div>
+<body class="light">
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">
+    <div class="drive-row"><span class="d">D</span><span class="r">RIVE</span></div>
+    <span class="sub">ARENA</span>
+    <div class="nav-line"></div>
+  </div>
+  <div class="nav-right">
+    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark</button>
+    <button class="investor-btn" onclick="openLogin()">Investor Login</button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-badge de">Bald in Frankfurt · Coming Soon</div>
+  <div class="hero-badge en" style="display:none">Coming to Frankfurt · Opening Soon</div>
+
+  <h1 class="de">Fahren lernen.<br>Ohne <span>Risiko.</span></h1>
+  <h1 class="en" style="display:none">Learn to drive.<br>Without <span>Risk.</span></h1>
+
+  <div class="hero-line"></div>
+
+  <p class="de">Das erste professionelle Fahrsimulations- und Trainingszentrum im Rhein-Main-Gebiet. Für Fahrschüler, Angstfahrer, Senioren und Unternehmen.</p>
+  <p class="en" style="display:none">The first professional driving simulation and training centre in the Rhine-Main region. For learners, anxious drivers, seniors and businesses.</p>
+
+  <div class="countdown">
+    <div class="cd-item"><div class="cd-num" id="cd-d">–</div><div class="cd-label de">Tage</div><div class="cd-label en" style="display:none">Days</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-h">–</div><div class="cd-label de">Stunden</div><div class="cd-label en" style="display:none">Hours</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-m">–</div><div class="cd-label de">Minuten</div><div class="cd-label en" style="display:none">Minutes</div></div>
   </div>
 </div>
-<script src="app.js"></script>
+
+<hr class="divider">
+
+<!-- ── FOR WHOM ── -->
+<section>
+  <div class="section-label de">Für wen?</div>
+  <div class="section-label en" style="display:none">Who is it for?</div>
+  <h2 class="section-title de">DRIVE ARENA ist für jeden.</h2>
+  <h2 class="section-title en" style="display:none">DRIVE ARENA is for everyone.</h2>
+  <p class="section-sub de">Egal ob du gerade den Führerschein machst, seit Jahren nicht mehr gefahren bist oder deine Mitarbeiter schulen willst – wir haben das passende Training.</p>
+  <p class="section-sub en" style="display:none">Whether you're learning to drive, haven't been behind the wheel for years, or want to train your team – we have the right programme.</p>
+
+  <div class="audience-grid">
+    <div class="aud-card">
+      <div class="aud-icon">🎓</div>
+      <div class="aud-title de">Fahrschüler</div>
+      <div class="aud-title en" style="display:none">Learner Drivers</div>
+      <div class="aud-desc de">Starte sicher. Übe Verkehrssituationen im Simulator bevor du ins reale Verkehrsgeschehen einsteigst.</div>
+      <div class="aud-desc en" style="display:none">Start safely. Practise traffic situations in the simulator before entering real traffic.</div>
+    </div>
+    <div class="aud-card">
+      <div class="aud-icon">💪</div>
+      <div class="aud-title de">Angstfahrer</div>
+      <div class="aud-title en" style="display:none">Anxious Drivers</div>
+      <div class="aud-desc de">Fahre wieder sicher. Baue Schritt für Schritt Vertrauen auf – ohne Risiko, ohne Druck.</div>
+      <div class="aud-desc en" style="display:none">Drive with confidence again. Build trust step by step – risk-free, pressure-free.</div>
+    </div>
+    <div class="aud-card">
+      <div class="aud-icon">👴</div>
+      <div class="aud-title de">Senioren</div>
+      <div class="aud-title en" style="display:none">Seniors</div>
+      <div class="aud-desc de">Fit am Steuer. Trainiere Reaktion, Gefahrenerkennung und neue Verkehrsregeln in sicherer Umgebung.</div>
+      <div class="aud-desc en" style="display:none">Stay fit to drive. Train reaction time, hazard awareness and new traffic rules safely.</div>
+    </div>
+    <div class="aud-card">
+      <div class="aud-icon">🏢</div>
+      <div class="aud-title de">Unternehmen</div>
+      <div class="aud-title en" style="display:none">Businesses</div>
+      <div class="aud-desc de">Sichere Flotten. Professionelle Fahrertrainings für Außendienst, Logistik und Firmenflotten.</div>
+      <div class="aud-desc en" style="display:none">Safe fleets. Professional driver training for field teams, logistics and company fleets.</div>
+    </div>
+    <div class="aud-card">
+      <div class="aud-icon">🚛</div>
+      <div class="aud-title de">Berufskraftfahrer</div>
+      <div class="aud-title en" style="display:none">Professional Drivers</div>
+      <div class="aud-desc de">Kompetenz erhalten. Gefahrensimulationen, defensives Fahren und Stressmanagement für Profis.</div>
+      <div class="aud-desc en" style="display:none">Maintain expertise. Hazard simulation, defensive driving and stress management for professionals.</div>
+    </div>
+    <div class="aud-card">
+      <div class="aud-icon">🏫</div>
+      <div class="aud-title de">Fahrschulen</div>
+      <div class="aud-title en" style="display:none">Driving Schools</div>
+      <div class="aud-desc de">Kooperationspartner. Bereite deine Schüler optimal vor – effizientere Fahrstunden durch Simulator-Vorbereitung.</div>
+      <div class="aud-desc en" style="display:none">Partner with us. Prepare your students optimally for more efficient driving lessons.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── HOW IT WORKS ── -->
+<section>
+  <div class="section-label de">So funktioniert es</div>
+  <div class="section-label en" style="display:none">How it works</div>
+  <h2 class="section-title de">Training der nächsten Generation.</h2>
+  <h2 class="section-title en" style="display:none">Next generation driver training.</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title de">Online buchen</div>
+      <div class="step-title en" style="display:none">Book online</div>
+      <div class="step-desc de">Wähle dein Paket, buche deinen Slot – einfach und schnell über unsere Website.</div>
+      <div class="step-desc en" style="display:none">Choose your package, book your slot – quick and easy via our website.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title de">Im Simulator trainieren</div>
+      <div class="step-title en" style="display:none">Train in the simulator</div>
+      <div class="step-desc de">Erlebe realistische Verkehrsszenarien – sicher, messbar, ohne jedes Risiko.</div>
+      <div class="step-desc en" style="display:none">Experience realistic traffic scenarios – safely, measurably, risk-free.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title de">Auswertung erhalten</div>
+      <div class="step-title en" style="display:none">Get your analysis</div>
+      <div class="step-desc de">Deine Fahrdaten werden ausgewertet – du siehst deinen Fortschritt schwarz auf weiß.</div>
+      <div class="step-desc en" style="display:none">Your driving data is analysed – see your progress in black and white.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-title de">Sicherer auf der Straße</div>
+      <div class="step-title en" style="display:none">Safer on the road</div>
+      <div class="step-desc de">Was du im Simulator lernst, überträgst du direkt in die reale Fahrsituation.</div>
+      <div class="step-desc en" style="display:none">What you learn in the simulator transfers directly to real driving situations.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── SURVEY ── -->
+<section>
+  <div class="section-label de">Deine Meinung zählt</div>
+  <div class="section-label en" style="display:none">Your opinion matters</div>
+  <h2 class="section-title de">Hilf uns DRIVE ARENA zu gestalten.</h2>
+  <h2 class="section-title en" style="display:none">Help us shape DRIVE ARENA.</h2>
+  <p class="section-sub de">Beantworte 4 kurze Fragen – anonym, dauert nur 60 Sekunden.</p>
+  <p class="section-sub en" style="display:none">Answer 4 quick questions – anonymous, takes only 60 seconds.</p>
+
+  <div class="survey-box">
+    <div class="survey-progress" id="survey-progress">
+      <div class="prog-dot" id="dot-0"></div>
+      <div class="prog-dot" id="dot-1"></div>
+      <div class="prog-dot" id="dot-2"></div>
+      <div class="prog-dot" id="dot-3"></div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="survey-q" id="sq-0">
+      <h3 class="de">Was wäre ein fairer Preis für eine Stunde Simulator-Training?</h3>
+      <h3 class="en" style="display:none">What would be a fair price for one hour of simulator training?</h3>
+      <div class="options">
+        <button class="opt-btn" onclick="selectOpt(this,0)">39 €</button>
+        <button class="opt-btn" onclick="selectOpt(this,0)">49 €</button>
+        <button class="opt-btn" onclick="selectOpt(this,0)">59 €</button>
+        <button class="opt-btn de" onclick="selectOpt(this,0)">Mehr als 59 €</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,0)">More than 59 €</button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="survey-q" id="sq-1" style="display:none">
+      <h3 class="de">Wofür würdest du DRIVE ARENA nutzen?</h3>
+      <h3 class="en" style="display:none">What would you use DRIVE ARENA for?</h3>
+      <div class="options">
+        <button class="opt-btn de" onclick="selectOpt(this,1)">Fahrschulvorbereitung</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,1)">Driving school prep</button>
+        <button class="opt-btn de" onclick="selectOpt(this,1)">Angstbewältigung</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,1)">Overcoming anxiety</button>
+        <button class="opt-btn de" onclick="selectOpt(this,1)">Auffrischung</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,1)">Refresher</button>
+        <button class="opt-btn de" onclick="selectOpt(this,1)">Firmentraining</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,1)">Corporate training</button>
+        <button class="opt-btn de" onclick="selectOpt(this,1)">Einfach Spaß</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,1)">Just for fun</button>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="survey-q" id="sq-2" style="display:none">
+      <h3 class="de">Hast du manchmal das Gefühl, in bestimmten Situationen unsicher zu fahren?</h3>
+      <h3 class="en" style="display:none">Do you sometimes feel uncertain in certain driving situations?</h3>
+      <div class="options">
+        <button class="opt-btn de" onclick="selectOpt(this,2)">Ja, auf der Autobahn</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,2)">Yes, on motorways</button>
+        <button class="opt-btn de" onclick="selectOpt(this,2)">Ja, bei Nacht</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,2)">Yes, at night</button>
+        <button class="opt-btn de" onclick="selectOpt(this,2)">Ja, bei Schlechtwetter</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,2)">Yes, in bad weather</button>
+        <button class="opt-btn de" onclick="selectOpt(this,2)">Ja, in der Stadt</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,2)">Yes, in the city</button>
+        <button class="opt-btn de" onclick="selectOpt(this,2)">Nein, ich fahre sicher</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,2)">No, I drive confidently</button>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="survey-q" id="sq-3" style="display:none">
+      <h3 class="de">Würdest du Simulator-Training weiterempfehlen?</h3>
+      <h3 class="en" style="display:none">Would you recommend simulator training to others?</h3>
+      <div class="options">
+        <button class="opt-btn de" onclick="selectOpt(this,3)">Ja, auf jeden Fall</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,3)">Yes, definitely</button>
+        <button class="opt-btn de" onclick="selectOpt(this,3)">Ja, wahrscheinlich</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,3)">Yes, probably</button>
+        <button class="opt-btn de" onclick="selectOpt(this,3)">Ich bin unsicher</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,3)">I'm not sure</button>
+        <button class="opt-btn de" onclick="selectOpt(this,3)">Eher nicht</button>
+        <button class="opt-btn en" style="display:none" onclick="selectOpt(this,3)">Probably not</button>
+      </div>
+    </div>
+
+    <!-- Survey done -->
+    <div id="survey-done" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:36px;margin-bottom:12px;">✅</div>
+      <p class="de" style="font-size:16px;font-weight:600;color:var(--text);">Danke für deine Antworten!</p>
+      <p class="en" style="display:none;font-size:16px;font-weight:600;color:var(--text);">Thank you for your answers!</p>
+      <p class="de" style="font-size:13px;color:var(--text2);margin-top:8px;">Du hilfst uns DRIVE ARENA besser zu gestalten.</p>
+      <p class="en" style="display:none;font-size:13px;color:var(--text2);margin-top:8px;">You're helping us shape DRIVE ARENA.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── REGISTRATION ── -->
+<section>
+  <div class="section-label de">Früh dabei sein</div>
+  <div class="section-label en" style="display:none">Be first</div>
+  <h2 class="section-title de">Erfahre es als Erster.</h2>
+  <h2 class="section-title en" style="display:none">Be the first to know.</h2>
+
+  <div class="reg-box">
+    <h3 class="de">Jetzt vormerken lassen</h3>
+    <h3 class="en" style="display:none">Register your interest</h3>
+    <p class="de">Wir informieren dich sobald DRIVE ARENA öffnet – und Early-Bird-Angebote gibt es nur für Vorgemerkte.</p>
+    <p class="en" style="display:none">We'll let you know as soon as DRIVE ARENA opens – early-bird offers exclusively for registered members.</p>
+
+    <form id="reg-form" action="https://formspree.io/f/xdapjzvo" method="POST" onsubmit="handleReg(event)">
+      <div class="form-row">
+        <div>
+          <div class="form-label de">Dein Name</div>
+          <div class="form-label en" style="display:none">Your name</div>
+          <input class="form-input" type="text" name="name" required placeholder="Max Mustermann">
+        </div>
+        <div>
+          <div class="form-label de">E-Mail-Adresse</div>
+          <div class="form-label en" style="display:none">Email address</div>
+          <input class="form-input" type="email" name="email" required placeholder="max@beispiel.de">
+        </div>
+        <div>
+          <div class="form-label de">Ich bin …</div>
+          <div class="form-label en" style="display:none">I am …</div>
+          <div class="audience-select" id="aud-select">
+            <div class="aud-opt de" onclick="selectAud(this,'Fahrschüler')">🎓 Fahrschüler/in</div>
+            <div class="aud-opt en" style="display:none" onclick="selectAud(this,'Learner')">🎓 Learner driver</div>
+            <div class="aud-opt de" onclick="selectAud(this,'Privatperson')">🚗 Privatperson</div>
+            <div class="aud-opt en" style="display:none" onclick="selectAud(this,'Private')">🚗 Private driver</div>
+            <div class="aud-opt de" onclick="selectAud(this,'Fahrschule')">🏫 Fahrschule</div>
+            <div class="aud-opt en" style="display:none" onclick="selectAud(this,'Driving school')">🏫 Driving school</div>
+            <div class="aud-opt de" onclick="selectAud(this,'Unternehmen')">🏢 Unternehmen</div>
+            <div class="aud-opt en" style="display:none" onclick="selectAud(this,'Business')">🏢 Business</div>
+          </div>
+          <input type="hidden" name="audience" id="aud-hidden" value="">
+          <input type="hidden" name="lang" id="lang-hidden" value="de">
+        </div>
+        <button type="submit" class="submit-btn de">Jetzt vormerken lassen →</button>
+        <button type="submit" class="submit-btn en" style="display:none">Register my interest →</button>
+      </div>
+    </form>
+    <div class="success-msg de" id="reg-success">✅ Danke! Du wirst als Erster informiert.</div>
+    <div class="success-msg en" id="reg-success-en" style="display:none">✅ Thank you! You'll be the first to know.</div>
+    <p style="font-size:11px;color:var(--text3);margin-top:16px;text-align:center;" class="de">Kein Spam. Keine Weitergabe. Abmeldung jederzeit möglich.</p>
+    <p style="font-size:11px;color:var(--text3);margin-top:16px;text-align:center;display:none" class="en">No spam. No sharing. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<!-- ── FOOTER ── */
+<footer>
+  <div class="f-logo"><span style="color:var(--accent);font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:3px;">D</span><span style="font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:3px;">RIVE</span> <span style="letter-spacing:6px;font-weight:900;font-family:Arial Black,sans-serif;">ARENA</span></div>
+  <div class="f-info de">Frankfurt am Main · <span class="f-accent">Öffnung Q3 2026</span> · <a href="mailto:info@drivearena.de">info@drivearena.de</a></div>
+  <div class="f-info en" style="display:none">Frankfurt am Main · <span class="f-accent">Opening Q3 2026</span> · <a href="mailto:info@drivearena.de">info@drivearena.de</a></div>
+  <div style="font-size:11px;color:var(--text3);margin-top:12px;">© 2026 DRIVE ARENA GmbH i.G. · <a href="#" style="color:var(--text3);" class="de">Datenschutz</a><a href="#" style="color:var(--text3);display:none" class="en">Privacy</a> · <a href="#" style="color:var(--text3);" class="de">Impressum</a><a href="#" style="color:var(--text3);display:none" class="en">Imprint</a></div>
+</footer>
+
+<!-- ── LOGIN OVERLAY ── -->
+<div class="overlay" id="login-overlay" onclick="closeOnBg(event)">
+  <div class="overlay-box">
+    <button class="overlay-close" onclick="closeLogin()">✕</button>
+    <div class="overlay-logo">
+      <div><span class="d">D</span><span class="r">RIVE</span></div>
+      <span class="sub">ARENA</span>
+      <div class="line"></div>
+    </div>
+    <h2 class="de">Investor &amp; Finanzierungsportal</h2>
+    <h2 class="en" style="display:none">Investor &amp; Financing Portal</h2>
+    <input type="password" id="ov-pw" placeholder="Zugangscode" autocomplete="off"
+           onkeydown="if(event.key==='Enter')overlayLogin()">
+    <button class="overlay-btn de" onclick="overlayLogin()">ZUGANG</button>
+    <button class="overlay-btn en" style="display:none" onclick="overlayLogin()">ACCESS</button>
+    <div class="overlay-error de" id="ov-err">Falscher Zugangscode</div>
+    <div class="overlay-error en" id="ov-err-en" style="display:none">Incorrect access code</div>
+    <div class="overlay-note de">Vertraulich · Nur für autorisierte Personen</div>
+    <div class="overlay-note en" style="display:none">Confidential · Authorised persons only</div>
+  </div>
+</div>
+
+<script>
+// ── THEME ──
+function toggleTheme() {
+  const b = document.body;
+  const btn = document.getElementById('theme-btn');
+  if (b.classList.contains('light')) {
+    b.classList.replace('light','dark');
+    btn.textContent = '☀️ Light';
+  } else {
+    b.classList.replace('dark','light');
+    btn.textContent = '🌙 Dark';
+  }
+}
+
+// ── LANGUAGE ──
+let currentLang = 'de';
+function setLang(l) {
+  currentLang = l;
+  document.querySelectorAll('.de').forEach(el => el.style.display = l==='de' ? '' : 'none');
+  document.querySelectorAll('.en').forEach(el => el.style.display = l==='en' ? '' : 'none');
+  document.getElementById('btn-de').classList.toggle('active', l==='de');
+  document.getElementById('btn-en').classList.toggle('active', l==='en');
+  document.getElementById('lang-hidden').value = l;
+  document.documentElement.lang = l;
+}
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const target = new Date('2026-08-01T09:00:00');
+  const now = new Date();
+  const diff = target - now;
+  if (diff <= 0) { document.querySelector('.countdown').style.display='none'; return; }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  document.getElementById('cd-d').textContent = d;
+  document.getElementById('cd-h').textContent = h;
+  document.getElementById('cd-m').textContent = m;
+}
+updateCountdown();
+setInterval(updateCountdown, 60000);
+
+// ── SURVEY ──
+const surveyAnswers = {};
+let currentQ = 0;
+
+function selectOpt(btn, qIdx) {
+  btn.closest('.options').querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  surveyAnswers['q' + qIdx] = btn.textContent.trim();
+  document.getElementById('dot-' + qIdx).classList.add('done');
+  setTimeout(() => nextQ(qIdx), 400);
+}
+
+function nextQ(current) {
+  document.getElementById('sq-' + current).style.display = 'none';
+  const next = current + 1;
+  if (next < 4) {
+    document.getElementById('sq-' + next).style.display = 'block';
+    currentQ = next;
+  } else {
+    document.getElementById('survey-done').style.display = 'block';
+    submitSurvey();
+  }
+}
+
+function submitSurvey() {
+  const FORMSPREE_SURVEY = 'xdapjzvo';
+  if (FORMSPREE_SURVEY === 'YOUR_FORMSPREE_SURVEY_ID') return;
+  fetch('https://formspree.io/f/' + FORMSPREE_SURVEY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...surveyAnswers, lang: currentLang, time: new Date().toLocaleString('de-DE') })
+  }).catch(() => {});
+}
+
+// ── REGISTRATION ──
+let selectedAud = '';
+function selectAud(el, val) {
+  document.querySelectorAll('.aud-opt').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedAud = val;
+  document.getElementById('aud-hidden').value = val;
+}
+
+function handleReg(e) {
+  e.preventDefault();
+  if (!selectedAud) return;
+  const form = document.getElementById('reg-form');
+  const data = new FormData(form);
+  fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(r => {
+    if (r.ok) {
+      form.style.display = 'none';
+      document.getElementById('reg-success').style.display = currentLang==='de' ? 'block' : 'none';
+      document.getElementById('reg-success-en').style.display = currentLang==='en' ? 'block' : 'none';
+    }
+  }).catch(() => {});
+}
+
+// ── LOGIN OVERLAY ──
+function openLogin() {
+  document.getElementById('login-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('ov-pw').focus(), 100);
+}
+function closeLogin() {
+  document.getElementById('login-overlay').classList.remove('open');
+  document.getElementById('ov-pw').value = '';
+}
+function closeOnBg(e) {
+  if (e.target === document.getElementById('login-overlay')) closeLogin();
+}
+
+// PBKDF2 check (same as dashboard)
+const PW_HASH = "3abe28056b00f1587c7e1a34e3b63152fc13d41ad4b4f6d390a70141cbe5e549";
+const PW_SALT = "DriveArena2026FR";
+const PW_ITER = 100000;
+
+async function overlayLogin() {
+  const input = document.getElementById('ov-pw').value.trim();
+  const btn = document.querySelector('.overlay-btn');
+  btn.textContent = '…';
+  btn.disabled = true;
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(input), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name:'PBKDF2', salt:enc.encode(PW_SALT), iterations:PW_ITER, hash:'SHA-256' },
+    key, 256
+  );
+  const hash = Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  btn.textContent = currentLang==='de' ? 'ZUGANG' : 'ACCESS';
+  btn.disabled = false;
+  if (hash === PW_HASH) {
+    localStorage.setItem('da_auth','1');
+    window.location.href = 'dashboard.html';
+  } else {
+    document.getElementById('ov-err').style.display  = currentLang==='de' ? 'block' : 'none';
+    document.getElementById('ov-err-en').style.display = currentLang==='en' ? 'block' : 'none';
+    document.getElementById('ov-pw').value = '';
+    setTimeout(() => {
+      document.getElementById('ov-err').style.display = 'none';
+      document.getElementById('ov-err-en').style.display = 'none';
+    }, 3000);
+  }
+}
+</script>
 </body>
 </html>

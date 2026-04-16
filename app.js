@@ -242,5 +242,22 @@ function calcScenario() {
   gEl.style.color  = gewinn >= 0 ? "#22c55e" : "#ef4444";
 }
 
-// ---- Hash helper (run once in browser console to generate a new hash) ----
-// sha256("yournewpassword").then(h => console.log(h));
+// ---- Theme Toggle ----
+function applyTheme(theme) {
+  document.body.classList.remove('dark','light');
+  document.body.classList.add(theme);
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+  localStorage.setItem('da_theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.body.classList.contains('light') ? 'light' : 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+// Apply saved theme on load
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('da_theme') || 'dark';
+  applyTheme(saved);
+});

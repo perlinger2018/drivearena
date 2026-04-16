@@ -1,23 +1,24 @@
-/* ============================================================
+/* ============================================================.theme-toggle {
+  background: none;
+  border: 1px solid var(--c-border-2);
+  color: var(--c-text-3);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-size: var(--fs-xs);
+  transition: all 0.2s;
+}
+.theme-toggle:hover { border-color: var(--c-accent); color: var(--c-accent); }
    DRIVE ARENA – Central Stylesheet
    CSS Custom Properties replace SCSS variables
+   Supports light/dark mode via .dark class on body
    ============================================================ */
 
 :root {
-  /* Colors */
-  --c-bg:          #0a0a0a;
-  --c-surface:     #141414;
-  --c-surface-2:   #1a1a1a;
-  --c-surface-3:   #1e1e1e;
-  --c-border:      #222;
-  --c-border-2:    #333;
+  /* Accent */
   --c-accent:      #CC0000;
   --c-accent-dark: #993300;
   --c-accent-dim:  rgba(204,0,0,0.08);
-  --c-text:        #f0f0f0;
-  --c-text-2:      #aaa;
-  --c-text-3:      #666;
-  --c-text-4:      #555;
   --c-success:     #22c55e;
   --c-danger:      #ef4444;
   --c-white:       #fff;
@@ -54,6 +55,34 @@
   --radius-xl: 12px;
   --radius-pill: 20px;
   --radius-circle: 50%;
+}
+
+/* ── DARK MODE (default) ── */
+body, body.dark {
+  --c-bg:        #0a0a0a;
+  --c-surface:   #141414;
+  --c-surface-2: #1a1a1a;
+  --c-surface-3: #1e1e1e;
+  --c-border:    #222;
+  --c-border-2:  #333;
+  --c-text:      #f0f0f0;
+  --c-text-2:    #aaa;
+  --c-text-3:    #666;
+  --c-text-4:    #555;
+}
+
+/* ── LIGHT MODE ── */
+body.light {
+  --c-bg:        #f5f5f3;
+  --c-surface:   #ffffff;
+  --c-surface-2: #f0efeb;
+  --c-surface-3: #e8e7e3;
+  --c-border:    #e0ddd8;
+  --c-border-2:  #ccc;
+  --c-text:      #1a1a1a;
+  --c-text-2:    #444;
+  --c-text-3:    #888;
+  --c-text-4:    #aaa;
 }
 
 /* ---- Reset ---- */

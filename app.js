@@ -112,9 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (pwInput) {
     pwInput.addEventListener("keydown", e => { if (e.key === "Enter") checkPw(); });
   }
-  // Dashboard init (only runs if canvas exists)
+  // Dashboard: Szenario-Slider (Chart erst bei sichtbarem Finanzplan — siehe ensureLiqChart)
   if (document.getElementById("liqChart")) {
-    initChart();
     calcScenario();
   }
 });
@@ -125,34 +124,99 @@ function showSection(id, btn) {
   document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
   document.getElementById("section-" + id).classList.add("active");
   btn.classList.add("active");
+  if (id === "finanzen") {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(ensureLiqChart);
+    });
+  }
 }
 
 // ---- PDF / Print ----
 function printSection(sectionId, title) {
-  // Temporarily show only the target section for print
+  document.body.classList.remove("print-full-report");
+
   const allSections = document.querySelectorAll(".section");
   const target = document.getElementById("section-" + sectionId);
+  const titleEl = document.getElementById("print-doc-title");
 
-  allSections.forEach(s => s.dataset.wasActive = s.classList.contains("active") ? "1" : "0");
+  const restore = () => {
+    allSections.forEach(s => {
+      s.classList.remove("active");
+      if (s.dataset.wasActive === "1") s.classList.add("active");
+    });
+    document.title = "DRIVE ARENA – Investor Portal";
+    if (titleEl) titleEl.textContent = "";
+    restoreLiqChartLayout();
+  };
+
+  allSections.forEach(s => { s.dataset.wasActive = s.classList.contains("active") ? "1" : "0"; });
   allSections.forEach(s => s.classList.remove("active"));
   target.classList.add("active");
 
   document.title = "DRIVE ARENA – " + title;
-  window.print();
+  if (titleEl) titleEl.textContent = title;
 
-  // Restore previous state after print dialog closes
-  allSections.forEach(s => {
-    s.classList.remove("active");
-    if (s.dataset.wasActive === "1") s.classList.add("active");
+  window.addEventListener("afterprint", restore, { once: true });
+
+  schedulePrint();
+}
+
+function printFullReport() {
+  document.body.classList.add("print-full-report");
+  const titleEl = document.getElementById("print-doc-title");
+  const fullTitle = "Investor-Unterlage (alle Kapitel)";
+  document.title = "DRIVE ARENA – " + fullTitle;
+  if (titleEl) titleEl.textContent = fullTitle;
+
+  const restore = () => {
+    document.body.classList.remove("print-full-report");
+    document.title = "DRIVE ARENA – Investor Portal";
+    if (titleEl) titleEl.textContent = "";
+    restoreLiqChartLayout();
+    window.removeEventListener("afterprint", restore);
+  };
+  window.addEventListener("afterprint", restore, { once: true });
+
+  schedulePrint();
+}
+
+function restoreLiqChartLayout() {
+  const chart = window.__daChart;
+  if (!chart || typeof chart.resize !== "function") return;
+  try {
+    chart.resize();
+    chart.update("none");
+  } catch (_) { /* ignore */ }
+}
+
+function schedulePrint() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ensureLiqChart();
+      setTimeout(() => window.print(), 200);
+    });
   });
-  document.title = "DRIVE ARENA – Investor Portal";
 }
 
 // ---- Liquidity Chart ----
 let chartInstance = null;
 
+/** Chart darf nicht initialisiert werden, solange #section-finanzen display:none ist (0×0-Canvas). */
+function ensureLiqChart() {
+  if (!document.getElementById("liqChart")) return;
+  if (!chartInstance) {
+    initChart();
+  } else if (window.__daChart && typeof window.__daChart.resize === "function") {
+    window.__daChart.resize();
+  }
+}
+
 function initChart() {
-  if (chartInstance) { chartInstance.destroy(); }
+  if (chartInstance) {
+    chartInstance.destroy();
+    chartInstance = null;
+    window.__daChart = null;
+  }
 
   const labels = [
     "Aug 26","Sep","Okt","Nov","Dez",
@@ -160,11 +224,12 @@ function initChart() {
     "Aug","Sep","Okt","Nov","Dez",
     "Jan 28","Feb","Mrz","Apr","Mai","Jun","Jul"
   ];
+  /* Annahme: höhere Eröffnungs-Marketingausgaben, Reserve 6×5.000 € — Tiefpunkt Nov 26 ~26.940 € */
   const data = [
-    34710, 33120, 32230, 31940, 32350,
-    33460, 35570, 39180, 43490, 48800, 54610, 60920,
-    67730, 74040, 80850, 86660, 90970,
-    95850, 101730, 108610, 116490, 124870, 133750, 142630
+    29710, 28120, 27230, 26940, 27350,
+    28460, 30570, 34180, 38490, 43800, 49610, 55920,
+    65730, 72040, 78850, 84660, 88970,
+    93850, 99730, 106610, 114490, 122870, 131750, 140630
   ];
 
   const ctx = document.getElementById("liqChart").getContext("2d");
@@ -211,44 +276,99 @@ function initChart() {
       }
     }
   });
+  window.__daChart = chartInstance;
 }
 
 // ---- Scenario Calculator ----
+/** Monatliche Fixlast lt. Finanzplan: Ø Jahr 1–2 vs. ab J3 inkl. Finanzierung (~770 € auf 5.900 € Betrieb). Preis Slider = € pro Einheit (45 min). */
+const SCENARIO_FIX_J12 = 5240;
+const SCENARIO_FIX_J3 = 6670;
+
+/** Kleinste ganzzahlige Auslastung %, bei der round(kap×p/100)×preis die Fixlast deckt (entspricht Szenario-Slider & Gewinnanzeige). */
+function minAuslastPercentForBreakEven(fixEur, preisEur, kapUnits) {
+  const needUnits = Math.ceil(fixEur / preisEur);
+  for (let p = 0; p <= 100; p++) {
+    if (Math.round((kapUnits * p) / 100) >= needUnits) return p;
+  }
+  return 100;
+}
+
 function calcScenario() {
   const ausl  = parseInt(document.getElementById("sl-auslastung").value, 10);
   const preis = parseInt(document.getElementById("sl-preis").value, 10);
   const sims  = parseInt(document.getElementById("sl-sims").value, 10);
 
-  document.getElementById("val-auslastung").textContent = ausl  + " %";
-  document.getElementById("val-preis").textContent      = preis + " €";
-  document.getElementById("val-sims").textContent       = sims;
+  const valAusl = document.getElementById("val-auslastung");
+  const valPreis = document.getElementById("val-preis");
+  const valSims = document.getElementById("val-sims");
+  if (valAusl) valAusl.textContent = ausl + " %";
+  if (valPreis) valPreis.textContent = preis + " €";
+  if (valSims) valSims.textContent = String(sims);
 
-  const kap     = sims * 10 * 24;                      // h/month capacity
+  /* Kapazität = abrechenbare Einheiten à 45 min (10 Betriebsstunden/Sim/Tag × 24 Tage) */
+  const kap     = Math.round(sims * 24 * ((10 * 60) / 45));
   const stunden = Math.round(kap * ausl / 100);
   const umsatz  = stunden * preis;
-  const fixkost = 5900;
-  const gewinn  = umsatz - fixkost;
-  const beH     = Math.ceil(fixkost / preis);
-  const bePct   = Math.round(beH / kap * 100);
 
-  document.getElementById("r-stunden").textContent = stunden.toLocaleString("de-DE");
-  document.getElementById("r-umsatz").textContent  = umsatz.toLocaleString("de-DE") + " €";
-  document.getElementById("r-jahres").textContent  = (umsatz * 12).toLocaleString("de-DE") + " €";
-  document.getElementById("r-kap").textContent     = kap.toLocaleString("de-DE") + " h";
-  document.getElementById("r-be").textContent      = bePct + " %";
+  const beH12 = Math.ceil(SCENARIO_FIX_J12 / preis);
+  const beH3  = Math.ceil(SCENARIO_FIX_J3 / preis);
+  const bePct12 = minAuslastPercentForBreakEven(SCENARIO_FIX_J12, preis, kap);
+  const bePct3  = minAuslastPercentForBreakEven(SCENARIO_FIX_J3, preis, kap);
+
+  const gewinnJ12 = umsatz - SCENARIO_FIX_J12;
+  const gewinnJ3  = umsatz - SCENARIO_FIX_J3;
+
+  const setTxt = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setTxt("r-stunden", stunden.toLocaleString("de-DE"));
+  setTxt("r-umsatz", umsatz.toLocaleString("de-DE") + " €");
+  setTxt("r-jahres", (umsatz * 12).toLocaleString("de-DE") + " €");
+  setTxt("r-kap", kap.toLocaleString("de-DE") + " Einh.");
+
+  setTxt("r-be-j12", `${bePct12} % (${beH12} Einh.)`);
+  setTxt("r-be-j3", `${bePct3} % (${beH3} Einh.)`);
 
   const gEl = document.getElementById("r-gewinn");
-  gEl.textContent  = (gewinn >= 0 ? "+" : "") + gewinn.toLocaleString("de-DE") + " €";
-  gEl.style.color  = gewinn >= 0 ? "#22c55e" : "#ef4444";
+  if (gEl) {
+    gEl.textContent = (gewinnJ12 >= 0 ? "+" : "") + gewinnJ12.toLocaleString("de-DE") + " €";
+    gEl.style.color = gewinnJ12 >= 0 ? "#22c55e" : "#ef4444";
+  }
+  const g3 = document.getElementById("r-gewinn-j3");
+  if (g3) {
+    g3.textContent =
+      "ab J3 (6.670 €): " +
+      (gewinnJ3 >= 0 ? "+" : "") +
+      gewinnJ3.toLocaleString("de-DE") +
+      " €";
+  }
 }
 
 // ---- Theme Toggle ----
 function applyTheme(theme) {
-  document.body.classList.remove('dark','light');
-  document.body.classList.add(theme);
+  const next = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.classList.remove('dark', 'light');
+  document.documentElement.classList.add(next);
+  document.body.classList.remove('dark', 'light');
+  document.body.classList.add(next);
   const btn = document.getElementById('theme-btn');
-  if (btn) btn.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
-  localStorage.setItem('da_theme', theme);
+  if (btn) btn.textContent = next === 'dark' ? '☀️ Light' : '🌙 Dark';
+  localStorage.setItem('da_theme', next);
+  updateChartTheme(next);
+}
+
+function updateChartTheme(theme) {
+  const chart = window.__daChart;
+  if (!chart || !chart.options || !chart.options.scales) return;
+  const tick = theme === 'light' ? '#444' : '#aaa';
+  const grid = theme === 'light' ? '#e0ddd8' : '#1a1a1a';
+  chart.options.scales.x.ticks.color = tick;
+  chart.options.scales.y.ticks.color = tick;
+  chart.options.scales.x.grid.color = grid;
+  chart.options.scales.y.grid.color = grid;
+  chart.update('none');
 }
 
 function toggleTheme() {
@@ -256,8 +376,28 @@ function toggleTheme() {
   applyTheme(current === 'dark' ? 'light' : 'dark');
 }
 
-// Apply saved theme on load
+// Theme: Klasse steht schon per Inline-Script auf <html>/<body>; hier nur UI sync
 document.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('da_theme') || 'dark';
   applyTheme(saved);
 });
+
+// ---- Headless-PDF (npm run pdf) — gleiches Layout wie „Alle Kapitel · PDF“ ----
+if (typeof document !== "undefined" && document.getElementById("dashboard")) {
+  window.__DA_EXPORT__ = {
+    enableFullReportPrintLayout() {
+      document.body.classList.add("print-full-report");
+      document.title = "DRIVE ARENA – Investor-Unterlage Komplett";
+      const t = document.getElementById("print-doc-title");
+      if (t) t.textContent = "Investor-Unterlage (alle Kapitel)";
+      ensureLiqChart();
+    },
+    resetAfterExport() {
+      document.body.classList.remove("print-full-report");
+      document.title = "DRIVE ARENA – Investor Portal";
+      const t = document.getElementById("print-doc-title");
+      if (t) t.textContent = "";
+      restoreLiqChartLayout();
+    }
+  };
+}

@@ -6,6 +6,7 @@
 <title>DRIVE ARENA – Coming Soon</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/favicon.svg">
+<link rel="stylesheet" href="assets/logo.css">
 <meta name="theme-color" content="#CC0000">
 <script src="assets/tab-attention.js" defer></script>
 <style>
@@ -62,26 +63,67 @@ a{color:var(--accent);text-decoration:none;}
 strong{font-weight:600;}
 
 /* ── NAV ── */
-nav{position:sticky;top:0;z-index:200;background:var(--nav-bg);border-bottom:1px solid var(--border);padding:16px 40px;display:flex;align-items:center;justify-content:space-between;transition:background var(--trans);}
-.nav-logo{display:flex;flex-direction:column;align-items:flex-start;line-height:1;}
-.nav-logo .drive-row{display:flex;align-items:baseline;}
-.nav-logo .d{color:var(--accent);font-size:26pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:5px;animation:fadeSlideD 0.7s ease both;}
-.nav-logo .r{color:var(--text);font-size:26pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:5px;animation:fadeSlide 0.7s 0.15s ease both;}
-.nav-logo .sub{font-size:10pt;letter-spacing:13px;color:var(--text3);animation:fadeSlide 0.6s 0.35s ease both;margin-top:1px;}
-.nav-logo .nav-line{height:2px;width:0;background:linear-gradient(to right,var(--accent),transparent);animation:lineGrow 0.6s 0.55s ease forwards;}
-@keyframes fadeSlideD{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
-@keyframes fadeSlide{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:translateX(0)}}
-@keyframes lineGrow{from{width:0}to{width:100%}}
-.nav-right{display:flex;align-items:center;gap:12px;}
-.lang-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:6px 14px;border-radius:20px;cursor:pointer;font-size:var(--fs-sm);transition:all var(--trans);}
-.lang-btn.active,.lang-btn:hover{border-color:var(--accent);color:var(--accent);}
-.theme-btn{background:none;border:1px solid var(--border);color:var(--text3);padding:6px 14px;border-radius:20px;cursor:pointer;font-size:var(--fs-sm);transition:all var(--trans);}
-.theme-btn:hover{border-color:var(--border);color:var(--text);}
-.investor-btn{background:var(--accent);color:#fff;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;font-size:var(--fs-sm);font-weight:600;letter-spacing:0.5px;transition:background var(--trans);}
+nav{
+  position:sticky;top:0;z-index:200;
+  background:var(--nav-bg);border-bottom:1px solid var(--border);
+  padding:16px 32px 18px;
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:20px;
+  transition:background var(--trans);
+}
+.nav-center{justify-self:center;min-width:0;}
+.nav-spacer{justify-self:start;}
+.nav-toggles{
+  position:absolute;
+  top:5px;
+  right:32px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  opacity:.5;
+  transition:opacity .25s ease;
+  z-index:1;
+}
+.nav-toggles:hover,.nav-toggles:focus-within{opacity:.82;}
+.nav-right{
+  justify-self:end;
+  align-self:center;
+  display:flex;
+  align-items:center;
+  flex-shrink:0;
+}
+.nav-toggle{
+  display:inline-flex;align-items:stretch;
+  border:1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  border-radius:999px;
+  padding:1px;background:transparent;gap:0;
+}
+.nav-toggle__btn{
+  border:none;background:transparent;color:var(--text3);
+  padding:2px 7px;border-radius:999px;cursor:pointer;
+  font-size:10px;font-weight:500;letter-spacing:.55px;
+  text-transform:uppercase;line-height:1.35;
+  opacity:.75;
+  transition:color .2s ease,opacity .2s ease,background .2s ease;
+}
+.nav-toggle__btn + .nav-toggle__btn{
+  box-shadow:inset 1px 0 0 color-mix(in srgb, var(--border) 45%, transparent);
+}
+.nav-toggle__btn:hover:not(.active){color:var(--text2);opacity:.95;}
+.nav-toggle__btn.active{
+  background:color-mix(in srgb, var(--bg3) 65%, transparent);
+  color:var(--text2);
+  opacity:1;
+  box-shadow:none;
+}
+body.dark .nav-toggle__btn.active{
+  background:color-mix(in srgb, var(--bg2) 55%, transparent);
+}
+.investor-btn{background:var(--accent);color:#fff;border:none;padding:9px 22px;border-radius:6px;cursor:pointer;font-size:var(--fs-sm);font-weight:600;letter-spacing:0.5px;transition:background var(--trans);box-shadow:0 1px 0 rgba(0,0,0,.06);}
 .investor-btn:hover{background:var(--accent-d);}
 
 /* ── HERO ── */
-.hero{padding:100px 40px 80px;text-align:center;max-width:860px;margin:0 auto;}
+.hero{padding:64px 40px 80px;text-align:center;max-width:860px;margin:0 auto;}
 .hero-badge{display:inline-block;background:var(--accent);color:#fff;padding:8px 22px;border-radius:20px;font-size:var(--fs-sm);font-weight:600;letter-spacing:1px;margin-bottom:28px;text-transform:uppercase;}
 .hero h1{font-size:clamp(36px,6.5vw,64px);font-weight:800;color:var(--hero-text);line-height:1.15;margin-bottom:24px;}
 .hero h1 span{color:var(--accent);}
@@ -175,11 +217,7 @@ section{padding:80px 40px;max-width:1080px;margin:0 auto;}
 .overlay-box{background:#ffffff;border:1px solid #e0e0e0;border-radius:12px;padding:48px 40px;width:400px;max-width:calc(100% - 40px);text-align:center;position:relative;max-height:90vh;overflow-y:auto;}
 .overlay-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#888;font-size:20px;cursor:pointer;line-height:1;}
 .overlay-close:hover{color:#333;}
-.overlay-logo{margin-bottom:24px;}
-.overlay-logo .d{color:#CC0000;font-size:26pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:5px;}
-.overlay-logo .r{color:#1a1a1a;font-size:26pt;font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:5px;}
-.overlay-logo .sub{font-size:9pt;letter-spacing:11px;color:#999;display:block;margin-top:2px;}
-.overlay-logo .line{height:1px;background:linear-gradient(to right,transparent,#CC0000,transparent);margin-top:6px;}
+.overlay-logo{margin-bottom:24px;display:flex;justify-content:center;}
 .overlay h2{font-size:var(--fs-body);color:#888;font-weight:400;margin-bottom:28px;}
 .overlay input{width:100%;padding:14px 16px;background:#f5f5f3;border:1px solid #ddd;border-radius:8px;color:#1a1a1a;font-size:var(--fs-lg);text-align:center;letter-spacing:4px;margin-bottom:14px;outline:none;transition:border-color 0.2s;}
 .overlay input:focus{border-color:#CC0000;}
@@ -187,7 +225,6 @@ section{padding:80px 40px;max-width:1080px;margin:0 auto;}
 .overlay-btn:hover{background:#990000;}
 .overlay-error{color:#CC0000;font-size:var(--fs-sm);margin-top:12px;display:none;}
 body.dark .overlay-box{background:var(--card-bg);border-color:var(--border);}
-body.dark .overlay-logo .r{color:var(--text);}
 body.dark .overlay input{background:var(--input-bg);border-color:var(--border);color:var(--text);}
 body.dark .overlay-close{color:var(--text3);}
 body.dark .overlay-close:hover{color:var(--text);}
@@ -199,7 +236,7 @@ body.dark .overlay .pw-label{color:var(--text3);}
 
 /* ── FOOTER ── */
 footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;text-align:center;}
-footer .f-logo{font-size:var(--fs-body);color:var(--text3);margin-bottom:8px;}
+footer .f-logo{margin-bottom:12px;display:flex;justify-content:center;}
 footer .f-info{font-size:var(--fs-body);color:var(--text2);margin-bottom:8px;}
 footer .f-accent{color:var(--accent);}
 footer .f-links{font-size:var(--fs-body);margin-top:12px;}
@@ -215,7 +252,10 @@ footer .f-links a{color:var(--text2);text-decoration:underline;cursor:pointer;ma
     --fs-lg:20px;
     --fs-xl:22px;
   }
-  nav{padding:12px 20px;}
+  nav{padding:14px 12px 16px;grid-template-columns:1fr auto 1fr;gap:6px;}
+  .nav-toggles{top:3px;right:12px;gap:4px;opacity:.55;}
+  .nav-toggle__btn{padding:2px 5px;font-size:8px;}
+  .investor-btn{padding:8px 14px;font-size:var(--fs-xs);}
   .hero{padding:48px 20px 40px;}
   section{padding:40px 20px;}
   .survey-box,.reg-box,.school-partner{padding:28px 20px;}
@@ -230,16 +270,61 @@ footer .f-links a{color:var(--text2);text-decoration:underline;cursor:pointer;ma
 
 <!-- ── NAV ── -->
 <nav>
-  <div class="nav-logo">
-    <div class="drive-row"><span class="d">D</span><span class="r">RIVE</span></div>
-    <span class="sub">ARENA</span>
-    <div class="nav-line"></div>
+  <div class="nav-spacer" aria-hidden="true"></div>
+  <div class="nav-center">
+    <div class="da-logo da-logo--nav da-logo--animate da-logo--interactive da-logo--center" aria-label="DRIVE ARENA">
+      <span class="da-logo__wrap">
+        <span class="da-logo__stack">
+          <span class="da-logo__mark-wrap">
+            <span class="da-logo__words">
+              <span class="da-logo__drive" aria-hidden="true">
+                <span class="da-logo__letter da-logo__letter--d">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-d.png" alt="" width="89" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-d.png" alt="" width="89" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--r">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-r.png" alt="" width="95" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-r.png" alt="" width="95" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--i">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-i.png" alt="" width="22" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-i.png" alt="" width="22" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--v">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-v.png" alt="" width="93" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-v.png" alt="" width="93" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--e">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-e.png" alt="" width="89" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-e.png" alt="" width="89" height="73" decoding="async">
+                </span>
+              </span>
+              <span class="da-logo__arena" aria-hidden="true">
+                <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-arena.png" alt="" width="439" height="78" decoding="async">
+                <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-arena.png" alt="" width="439" height="78" decoding="async">
+              </span>
+            </span>
+          </span>
+          <span class="da-logo__swoosh-wrap">
+            <img class="da-logo__img da-logo__dark" src="assets/logo-dark-swoosh.png" alt="" width="288" height="28" decoding="async">
+            <img class="da-logo__img da-logo__light" src="assets/logo-light-swoosh.png" alt="" width="288" height="28" decoding="async">
+          </span>
+        </span>
+      </span>
+    </div>
+  </div>
+  <div class="nav-toggles">
+    <div class="nav-toggle" role="group" aria-label="Sprache">
+      <button type="button" class="nav-toggle__btn active" id="btn-de" onclick="setLang('de')">DE</button>
+      <button type="button" class="nav-toggle__btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <div class="nav-toggle" role="group" aria-label="Darstellung">
+      <button type="button" class="nav-toggle__btn active" id="btn-light" onclick="setTheme('light')">Light</button>
+      <button type="button" class="nav-toggle__btn" id="btn-dark" onclick="setTheme('dark')">Dark</button>
+    </div>
   </div>
   <div class="nav-right">
-    <button class="lang-btn active" id="btn-de" onclick="setLang('de')">DE</button>
-    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
-    <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙 Dark</button>
-    <button class="investor-btn" onclick="openLogin()">Investor Login</button>
+    <button type="button" class="investor-btn" onclick="openLogin()">Investor Login</button>
   </div>
 </nav>
 
@@ -600,7 +685,48 @@ footer .f-links a{color:var(--text2);text-decoration:underline;cursor:pointer;ma
 
 <!-- ── FOOTER ── -->
 <footer>
-  <div class="f-logo"><span style="color:var(--accent);font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:3px;">D</span><span style="font-weight:900;font-family:Arial Black,sans-serif;letter-spacing:3px;">RIVE</span> <span style="letter-spacing:6px;font-weight:900;font-family:Arial Black,sans-serif;">ARENA</span></div>
+  <div class="f-logo">
+    <div class="da-logo da-logo--sm da-logo--muted da-logo--center" aria-hidden="true">
+      <span class="da-logo__wrap">
+        <span class="da-logo__stack">
+          <span class="da-logo__mark-wrap">
+            <span class="da-logo__words">
+              <span class="da-logo__drive" aria-hidden="true">
+                <span class="da-logo__letter da-logo__letter--d">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-d.png" alt="" width="89" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-d.png" alt="" width="89" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--r">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-r.png" alt="" width="95" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-r.png" alt="" width="95" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--i">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-i.png" alt="" width="22" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-i.png" alt="" width="22" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--v">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-v.png" alt="" width="93" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-v.png" alt="" width="93" height="73" decoding="async">
+                </span>
+                <span class="da-logo__letter da-logo__letter--e">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-e.png" alt="" width="89" height="73" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-e.png" alt="" width="89" height="73" decoding="async">
+                </span>
+              </span>
+              <span class="da-logo__arena" aria-hidden="true">
+                <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-arena.png" alt="" width="439" height="78" decoding="async">
+                <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-arena.png" alt="" width="439" height="78" decoding="async">
+              </span>
+            </span>
+          </span>
+          <span class="da-logo__swoosh-wrap">
+            <img class="da-logo__img da-logo__dark" src="assets/logo-dark-swoosh.png" alt="" width="288" height="28" decoding="async">
+            <img class="da-logo__img da-logo__light" src="assets/logo-light-swoosh.png" alt="" width="288" height="28" decoding="async">
+          </span>
+        </span>
+      </span>
+    </div>
+  </div>
   <div class="f-info de">Frankfurt am Main · <span class="f-accent">Öffnung Q3 2026</span> · <a href="mailto:info@drivearena.de">info@drivearena.de</a></div>
   <div class="f-info en" style="display:none">Frankfurt am Main · <span class="f-accent">Opening Q3 2026</span> · <a href="mailto:info@drivearena.de">info@drivearena.de</a></div>
   <div class="f-links">
@@ -695,9 +821,46 @@ footer .f-links a{color:var(--text2);text-decoration:underline;cursor:pointer;ma
   <div class="overlay-box" role="dialog" aria-modal="true" aria-labelledby="login-dialog-title" data-login-dialog onclick="event.stopPropagation()">
     <button type="button" class="overlay-close" onclick="closeLogin()" data-login-close-label-de="Schließen" data-login-close-label-en="Close" aria-label="Schließen">✕</button>
     <div class="overlay-logo">
-      <div><span class="d">D</span><span class="r">RIVE</span></div>
-      <span class="sub">ARENA</span>
-      <div class="line"></div>
+      <div class="da-logo da-logo--lg da-logo--animate" aria-hidden="true">
+        <span class="da-logo__wrap">
+          <span class="da-logo__stack">
+            <span class="da-logo__mark-wrap">
+              <span class="da-logo__words">
+                <span class="da-logo__drive" aria-hidden="true">
+                  <span class="da-logo__letter da-logo__letter--d">
+                    <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-d.png" alt="" width="89" height="73" decoding="async">
+                    <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-d.png" alt="" width="89" height="73" decoding="async">
+                  </span>
+                  <span class="da-logo__letter da-logo__letter--r">
+                    <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-r.png" alt="" width="95" height="73" decoding="async">
+                    <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-r.png" alt="" width="95" height="73" decoding="async">
+                  </span>
+                  <span class="da-logo__letter da-logo__letter--i">
+                    <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-i.png" alt="" width="22" height="73" decoding="async">
+                    <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-i.png" alt="" width="22" height="73" decoding="async">
+                  </span>
+                  <span class="da-logo__letter da-logo__letter--v">
+                    <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-v.png" alt="" width="93" height="73" decoding="async">
+                    <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-v.png" alt="" width="93" height="73" decoding="async">
+                  </span>
+                  <span class="da-logo__letter da-logo__letter--e">
+                    <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-drive-e.png" alt="" width="89" height="73" decoding="async">
+                    <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-drive-e.png" alt="" width="89" height="73" decoding="async">
+                  </span>
+                </span>
+                <span class="da-logo__arena" aria-hidden="true">
+                  <img class="da-logo__img da-logo__dark" src="assets/logo-letters/logo-dark-arena.png" alt="" width="439" height="78" decoding="async">
+                  <img class="da-logo__img da-logo__light" src="assets/logo-letters/logo-light-arena.png" alt="" width="439" height="78" decoding="async">
+                </span>
+              </span>
+            </span>
+            <span class="da-logo__swoosh-wrap">
+              <img class="da-logo__img da-logo__dark" src="assets/logo-dark-swoosh.png" alt="" width="288" height="28" decoding="async">
+              <img class="da-logo__img da-logo__light" src="assets/logo-light-swoosh.png" alt="" width="288" height="28" decoding="async">
+            </span>
+          </span>
+        </span>
+      </div>
     </div>
     <h2 class="de" id="login-dialog-title">Investor &amp; Finanzierungsportal</h2>
     <h2 class="en" style="display:none" id="login-dialog-title-en">Investor &amp; Financing Portal</h2>
@@ -715,16 +878,16 @@ footer .f-links a{color:var(--text2);text-decoration:underline;cursor:pointer;ma
 
 <script>
 // ── THEME ──
+function setTheme(theme) {
+  const next = theme === 'dark' ? 'dark' : 'light';
+  document.body.classList.remove('light', 'dark');
+  document.body.classList.add(next);
+  document.getElementById('btn-light').classList.toggle('active', next === 'light');
+  document.getElementById('btn-dark').classList.toggle('active', next === 'dark');
+}
+
 function toggleTheme() {
-  const b = document.body;
-  const btn = document.getElementById('theme-btn');
-  if (b.classList.contains('light')) {
-    b.classList.replace('light','dark');
-    btn.textContent = '☀️ Light';
-  } else {
-    b.classList.replace('dark','light');
-    btn.textContent = '🌙 Dark';
-  }
+  setTheme(document.body.classList.contains('light') ? 'dark' : 'light');
 }
 
 // ── LANGUAGE ──
@@ -921,6 +1084,13 @@ function openLogin() {
   ov.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
   syncLoginDialogA11y();
+
+  const loginLogo = ov.querySelector('.da-logo--animate');
+  if (loginLogo) {
+    loginLogo.classList.remove('da-logo--animate');
+    void loginLogo.offsetWidth;
+    loginLogo.classList.add('da-logo--animate');
+  }
 
   loginEscapeHandler = function(e) {
     if (e.key === 'Escape') { e.preventDefault(); closeLogin(); }

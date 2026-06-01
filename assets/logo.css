@@ -1,0 +1,517 @@
+/* DRIVE ARENA – Logo (letter mark + swoosh, theme variants, entrance animation) */
+
+.da-logo {
+  --da-logo-h: 46px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.da-logo__wrap {
+  position: relative;
+  display: block;
+}
+
+.da-logo__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.da-logo__mark-wrap,
+.da-logo__swoosh-wrap {
+  display: block;
+  line-height: 0;
+}
+
+/* ── Mark: D R I V E einzeln, dann ARENA ── */
+.da-logo__words {
+  position: relative;
+  display: block;
+  height: calc(var(--da-logo-h) * 0.905);
+  width: auto;
+  aspect-ratio: 614 / 151;
+  max-width: min(100vw, 320px);
+}
+
+.da-logo__drive {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48.34%;
+}
+
+.da-logo__letter {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.da-logo__letter--d { left: 0.65%; width: 13.84%; }
+.da-logo__letter--r { left: 24.27%; width: 14.82%; }
+.da-logo__letter--i { left: 48.7%; width: 2.93%; }
+.da-logo__letter--v { left: 61.4%; width: 14.5%; }
+.da-logo__letter--e { left: 85.34%; width: 13.84%; }
+
+.da-logo__letter .da-logo__img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+}
+
+.da-logo__arena {
+  position: absolute;
+  left: 14.5%;
+  width: 71.66%;
+  top: 48.34%;
+  height: 51.66%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.da-logo__arena .da-logo__img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+
+.da-logo__swoosh-wrap {
+  width: 130%;
+  margin-top: calc(var(--da-logo-h) * 0.022);
+  position: relative;
+  isolation: isolate;
+}
+
+.da-logo__swoosh-wrap .da-logo__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(var(--da-logo-h) * 0.14);
+  object-fit: contain;
+  object-position: center;
+  position: relative;
+  z-index: 1;
+  filter:
+    drop-shadow(0 0 1px rgba(204, 0, 0, 0.45))
+    drop-shadow(0 0 3px rgba(204, 0, 0, 0.22))
+    drop-shadow(0 0 10px rgba(255, 255, 255, 0.28))
+    drop-shadow(0 0 22px rgba(255, 255, 255, 0.1));
+  transition: filter 0.4s ease;
+}
+
+body.light .da-logo__swoosh-wrap .da-logo__img {
+  filter:
+    drop-shadow(0 0 1px rgba(204, 0, 0, 0.4))
+    drop-shadow(0 0 4px rgba(204, 0, 0, 0.16))
+    drop-shadow(0 0 12px rgba(0, 0, 0, 0.06));
+}
+
+body.dark .da-logo__swoosh-wrap .da-logo__img {
+  filter:
+    drop-shadow(0 0 1px rgba(255, 190, 190, 0.65))
+    drop-shadow(0 0 4px rgba(204, 0, 0, 0.32))
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.18))
+    drop-shadow(0 0 28px rgba(255, 255, 255, 0.08));
+}
+
+/* Neutraler Lichtschein – kein roter Fleck */
+.da-logo__swoosh-wrap::after {
+  content: "";
+  position: absolute;
+  left: -4%;
+  right: -4%;
+  top: 50%;
+  height: 260%;
+  transform: translateY(-50%);
+  background: radial-gradient(
+    ellipse 100% 40% at 50% 50%,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.04) 38%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+}
+
+body.light .da-logo__swoosh-wrap::after {
+  background: radial-gradient(
+    ellipse 100% 40% at 50% 50%,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.02) 40%,
+    transparent 72%
+  );
+  opacity: 0.45;
+}
+
+.da-logo__img {
+  object-fit: contain;
+  image-rendering: auto;
+}
+
+.da-logo__swoosh-wrap .da-logo__img { aspect-ratio: 1150 / 113; }
+
+/* Theme variants */
+.da-logo__dark  { display: none; }
+.da-logo__light { display: block; }
+
+body.dark .da-logo:not(.da-logo--on-light) .da-logo__dark  { display: block; }
+body.dark .da-logo:not(.da-logo--on-light) .da-logo__light { display: none; }
+
+body.light .da-logo:not(.da-logo--on-dark) .da-logo__dark  { display: none; }
+body.light .da-logo:not(.da-logo--on-dark) .da-logo__light { display: block; }
+
+.da-logo--on-dark .da-logo__dark  { display: block !important; }
+.da-logo--on-dark .da-logo__light { display: none !important; }
+
+.da-logo--on-light .da-logo__light { display: block !important; }
+.da-logo--on-light .da-logo__dark  { display: none !important; }
+
+/* Sizes */
+.da-logo--xs { --da-logo-h: 24px; }
+.da-logo--sm { --da-logo-h: 32px; }
+.da-logo--md { --da-logo-h: 46px; }
+.da-logo--lg { --da-logo-h: 60px; }
+.da-logo--xl { --da-logo-h: 84px; }
+
+.da-logo--nav {
+  --da-logo-h: clamp(50px, 5.5vw, 74px);
+}
+.da-logo--nav .da-logo__words {
+  max-width: min(78vw, 420px);
+}
+
+@media (max-width: 900px) {
+  .da-logo--nav { --da-logo-h: clamp(46px, 7vw, 64px); }
+}
+
+@media (max-width: 600px) {
+  .da-logo--nav { --da-logo-h: clamp(40px, 12vw, 54px); }
+  .da-logo--nav .da-logo__words {
+    max-width: min(70vw, 300px);
+  }
+}
+
+.da-logo--center { align-items: center; }
+
+.da-logo--muted .da-logo__img {
+  opacity: 0.82;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+.da-logo--muted:hover .da-logo__img { opacity: 1; }
+
+/* ── Entrance: D→R→I→V→E, ARENA, Swoosh ── */
+.da-logo--animate .da-logo__letter {
+  opacity: 0;
+  animation: daLetterIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.da-logo--animate .da-logo__letter--d { animation-delay: 0s; }
+.da-logo--animate .da-logo__letter--r { animation-delay: 0.09s; }
+.da-logo--animate .da-logo__letter--i { animation-delay: 0.18s; }
+.da-logo--animate .da-logo__letter--v { animation-delay: 0.27s; }
+.da-logo--animate .da-logo__letter--e { animation-delay: 0.36s; }
+
+.da-logo--animate .da-logo__arena {
+  opacity: 0;
+  animation: daArenaIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.58s both;
+}
+
+.da-logo--animate .da-logo__swoosh-wrap {
+  animation: daSwooshIn 1.05s cubic-bezier(0.16, 1, 0.3, 1) 1.05s both;
+  transform-origin: center center;
+}
+
+.da-logo--animate .da-logo__swoosh-wrap::before {
+  content: "";
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: 50%;
+  height: 320%;
+  transform: translateY(-50%) scaleX(0);
+  background: radial-gradient(
+    ellipse 100% 50% at 50% 50%,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.1) 32%,
+    transparent 70%
+  );
+  animation: daSwooshBloom 1.35s cubic-bezier(0.16, 1, 0.3, 1) 1.08s both;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes daLetterIn {
+  0% {
+    opacity: 0;
+    transform: translateY(7px) scale(0.9);
+    filter: blur(3px);
+  }
+  70% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes daArenaIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes daSwooshIn {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+.da-logo--animate .da-logo__swoosh-wrap .da-logo__img {
+  animation: daSwooshGlowIn 1.05s cubic-bezier(0.16, 1, 0.3, 1) 1.05s both;
+}
+
+@keyframes daSwooshGlowIn {
+  0% {
+    filter:
+      brightness(2)
+      drop-shadow(0 0 16px rgba(255, 255, 255, 0.95))
+      drop-shadow(0 0 32px rgba(255, 255, 255, 0.55))
+      drop-shadow(0 0 4px rgba(204, 0, 0, 0.6));
+  }
+  45% {
+    filter:
+      brightness(1.3)
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.75))
+      drop-shadow(0 0 24px rgba(255, 255, 255, 0.3))
+      drop-shadow(0 0 3px rgba(204, 0, 0, 0.45));
+  }
+  100% {
+    filter:
+      drop-shadow(0 0 1px rgba(204, 0, 0, 0.45))
+      drop-shadow(0 0 3px rgba(204, 0, 0, 0.22))
+      drop-shadow(0 0 10px rgba(255, 255, 255, 0.28))
+      drop-shadow(0 0 22px rgba(255, 255, 255, 0.1));
+  }
+}
+
+body.dark .da-logo--animate .da-logo__swoosh-wrap .da-logo__img {
+  animation-name: daSwooshGlowInDark;
+}
+
+@keyframes daSwooshGlowInDark {
+  0% {
+    filter:
+      brightness(2)
+      drop-shadow(0 0 18px rgba(255, 255, 255, 1))
+      drop-shadow(0 0 36px rgba(255, 255, 255, 0.6))
+      drop-shadow(0 0 4px rgba(204, 0, 0, 0.65));
+  }
+  45% {
+    filter:
+      brightness(1.35)
+      drop-shadow(0 0 14px rgba(255, 255, 255, 0.85))
+      drop-shadow(0 0 28px rgba(255, 255, 255, 0.35))
+      drop-shadow(0 0 3px rgba(204, 0, 0, 0.5));
+  }
+  100% {
+    filter:
+      drop-shadow(0 0 1px rgba(255, 190, 190, 0.65))
+      drop-shadow(0 0 4px rgba(204, 0, 0, 0.32))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.18))
+      drop-shadow(0 0 28px rgba(255, 255, 255, 0.08));
+  }
+}
+
+@keyframes daSwooshBloom {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scaleX(0.04);
+  }
+  38% {
+    opacity: 0.85;
+    transform: translateY(-50%) scaleX(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50%) scaleX(1);
+  }
+}
+
+/* Hover – Glanz + sanftes Wabern (kein Lift) */
+.da-logo--interactive .da-logo__wrap {
+  position: relative;
+}
+
+.da-logo--interactive .da-logo__wrap::after {
+  content: "";
+  position: absolute;
+  inset: -10% -30%;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 58%
+  );
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  transform: translateX(-130%) skewX(-14deg);
+}
+
+.da-logo--interactive:hover .da-logo__wrap::after {
+  opacity: 1;
+  animation: daLogoShimmer 2.1s ease-in-out infinite;
+}
+
+.da-logo--interactive .da-logo__swoosh-wrap {
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.da-logo--interactive:hover .da-logo__swoosh-wrap {
+  opacity: 1;
+  animation: daSwooshWave 2.4s ease-in-out infinite;
+}
+
+.da-logo--interactive .da-logo__swoosh-wrap .da-logo__img {
+  transition: filter 0.4s ease;
+}
+
+.da-logo--interactive:hover .da-logo__swoosh-wrap .da-logo__img {
+  animation: daSwooshHoverShine 2.4s ease-in-out infinite;
+}
+
+body.dark .da-logo--interactive:hover .da-logo__swoosh-wrap .da-logo__img {
+  animation-name: daSwooshHoverShineDark;
+}
+
+body.light .da-logo--interactive:hover .da-logo__swoosh-wrap .da-logo__img {
+  animation-name: daSwooshHoverShineLight;
+}
+
+.da-logo--interactive:hover .da-logo__swoosh-wrap::after {
+  animation: daSwooshAura 2.4s ease-in-out infinite;
+}
+
+@keyframes daLogoShimmer {
+  0% { transform: translateX(-130%) skewX(-14deg); }
+  100% { transform: translateX(130%) skewX(-14deg); }
+}
+
+@keyframes daSwooshWave {
+  0%, 100% { opacity: 1; transform: translateY(0) scaleX(1); }
+  35% { opacity: 1; transform: translateY(-0.5px) scaleX(1.012); }
+  70% { opacity: 1; transform: translateY(0.5px) scaleX(0.994); }
+}
+
+@keyframes daSwooshAura {
+  0%, 100% { opacity: 0.55; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.9; transform: translateY(-50%) scale(1.08); }
+}
+
+@keyframes daSwooshHoverShine {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 1px rgba(204, 0, 0, 0.45))
+      drop-shadow(0 0 3px rgba(204, 0, 0, 0.22))
+      drop-shadow(0 0 10px rgba(255, 255, 255, 0.28))
+      drop-shadow(0 0 22px rgba(255, 255, 255, 0.1));
+  }
+  50% {
+    filter:
+      brightness(1.15)
+      drop-shadow(0 0 2px rgba(204, 0, 0, 0.55))
+      drop-shadow(0 0 8px rgba(204, 0, 0, 0.28))
+      drop-shadow(0 0 18px rgba(255, 255, 255, 0.45))
+      drop-shadow(0 0 36px rgba(255, 255, 255, 0.2));
+  }
+}
+
+@keyframes daSwooshHoverShineLight {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 1px rgba(204, 0, 0, 0.4))
+      drop-shadow(0 0 4px rgba(204, 0, 0, 0.16))
+      drop-shadow(0 0 12px rgba(0, 0, 0, 0.06));
+  }
+  50% {
+    filter:
+      brightness(1.12)
+      drop-shadow(0 0 2px rgba(204, 0, 0, 0.5))
+      drop-shadow(0 0 8px rgba(204, 0, 0, 0.22))
+      drop-shadow(0 0 20px rgba(255, 255, 255, 0.35));
+  }
+}
+
+@keyframes daSwooshHoverShineDark {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 1px rgba(255, 190, 190, 0.65))
+      drop-shadow(0 0 4px rgba(204, 0, 0, 0.32))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.18))
+      drop-shadow(0 0 28px rgba(255, 255, 255, 0.08));
+  }
+  50% {
+    filter:
+      brightness(1.18)
+      drop-shadow(0 0 3px rgba(255, 210, 210, 0.85))
+      drop-shadow(0 0 10px rgba(204, 0, 0, 0.4))
+      drop-shadow(0 0 22px rgba(255, 255, 255, 0.42))
+      drop-shadow(0 0 40px rgba(255, 255, 255, 0.18));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .da-logo--animate .da-logo__letter,
+  .da-logo--animate .da-logo__arena,
+  .da-logo--animate .da-logo__swoosh-wrap,
+  .da-logo--animate .da-logo__swoosh-wrap::before,
+  .da-logo--animate .da-logo__swoosh-wrap .da-logo__img {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .da-logo--animate .da-logo__swoosh-wrap::before { display: none; }
+  .da-logo--interactive:hover .da-logo__wrap::after,
+  .da-logo--interactive:hover .da-logo__swoosh-wrap,
+  .da-logo--interactive:hover .da-logo__swoosh-wrap::after,
+  .da-logo--interactive:hover .da-logo__swoosh-wrap .da-logo__img {
+    animation: none;
+  }
+  body.dark .da-logo--animate .da-logo__swoosh-wrap .da-logo__img,
+  .da-logo--animate .da-logo__swoosh-wrap .da-logo__img {
+    filter:
+      drop-shadow(0 0 3px rgba(204, 0, 0, 0.35))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.15));
+  }
+}

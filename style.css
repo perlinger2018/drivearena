@@ -116,11 +116,10 @@ body {
   text-align: center;
 }
 .login-logo { margin-bottom: var(--sp-xl); }
-.logo-d    { color: var(--c-accent); font-size: 28pt; font-weight: var(--fw-black); font-family: var(--font-logo); letter-spacing: 6px; }
-.logo-rest { color: var(--c-logo-rest, var(--c-text)); font-size: 28pt; font-weight: var(--fw-black); font-family: var(--font-logo); letter-spacing: 6px; }
-.logo-sub  { font-size: var(--fs-xs); letter-spacing: 12px; color: var(--c-text-3); margin-top: 2px; display: block; }
-.logo-line { height: 1px; background: linear-gradient(to right, transparent, var(--c-accent), transparent); margin-top: var(--sp-xs); }
 .login-box h2 { font-size: var(--fs-lg); color: var(--c-text-2); font-weight: var(--fw-normal); margin-bottom: var(--sp-lg); }
+
+/* Brand logo: see assets/logo.css (.da-logo) */
+
 .login-box input {
   width: 100%;
   padding: 12px var(--sp-md);
@@ -154,93 +153,10 @@ body {
 .login-note  { font-size: var(--fs-sm); color: var(--c-text-2); margin-top: var(--sp-md); }
 
 /* ============================================================
-   BRAND LOGO (Landing + Investor – gleiche Struktur & Animation)
+   BRAND LOGO → assets/logo.css (.da-logo)
    ============================================================ */
-.brand-logo,
-.nav-logo,
-.topbar-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1;
-  text-decoration: none;
-  color: inherit;
-}
-.brand-logo .drive-row,
-.nav-logo .drive-row,
-.topbar-logo .drive-row {
-  display: flex;
-  align-items: baseline;
-}
-.brand-logo .d,
-.nav-logo .d,
-.topbar-logo .d {
-  color: var(--c-accent);
-  font-size: 26pt;
-  font-weight: var(--fw-black);
-  font-family: var(--font-logo);
-  letter-spacing: 5px;
-  animation: brand-fade-d 0.7s ease both;
-}
-.brand-logo .r,
-.nav-logo .r,
-.topbar-logo .r,
-.topbar-logo .rest {
-  color: var(--c-logo-rest, var(--c-text));
-  font-size: 26pt;
-  font-weight: var(--fw-black);
-  font-family: var(--font-logo);
-  letter-spacing: 5px;
-  animation: brand-fade 0.7s 0.15s ease both;
-}
-.brand-logo .sub,
-.nav-logo .sub,
-.topbar-logo .sub {
-  font-size: 10pt;
-  letter-spacing: 13px;
-  color: var(--c-text-3);
-  margin-top: 1px;
-  display: block;
-  animation: brand-fade 0.6s 0.35s ease both;
-}
-.brand-logo .nav-line,
-.nav-logo .nav-line,
-.topbar-logo .nav-line {
-  height: 2px;
-  width: 0;
-  background: linear-gradient(to right, var(--c-accent), transparent);
-  animation: brand-line-grow 0.6s 0.55s ease forwards;
-}
-@keyframes brand-fade-d {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes brand-fade {
-  from { opacity: 0; transform: translateX(-4px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes brand-line-grow {
-  from { width: 0; }
-  to   { width: 100%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .brand-logo .d,
-  .brand-logo .r,
-  .brand-logo .sub,
-  .brand-logo .nav-line,
-  .nav-logo .d,
-  .nav-logo .r,
-  .nav-logo .sub,
-  .nav-logo .nav-line,
-  .topbar-logo .d,
-  .topbar-logo .r,
-  .topbar-logo .sub,
-  .topbar-logo .nav-line {
-    animation: none;
-    opacity: 1;
-    transform: none;
-    width: 100%;
-  }
+.topbar .da-logo {
+  flex-shrink: 0;
 }
 
 /* ============================================================

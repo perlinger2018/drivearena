@@ -224,12 +224,12 @@ function initChart() {
     "Aug","Sep","Okt","Nov","Dez",
     "Jan 28","Feb","Mrz","Apr","Mai","Jun","Jul"
   ];
-  /* Annahme: höhere Eröffnungs-Marketingausgaben, Reserve 6×5.000 € — Tiefpunkt Nov 26 ~26.940 € */
+  /* Liquiditätsplan Bank (Juni 2026) — Tiefpunkt Nov 26 ~25.776 € */
   const data = [
-    29710, 28120, 27230, 26940, 27350,
-    28460, 30570, 34180, 38490, 43800, 49610, 55920,
-    65730, 72040, 78850, 84660, 88970,
-    93850, 99730, 106610, 114490, 122870, 131750, 140630
+    28594, 27388, 26182, 25776, 26370,
+    27964, 30558, 34752, 39546, 44940, 50934, 57528,
+    57321, 57114, 57907, 59700, 62493, 65286, 69079,
+    72872, 77665, 82458, 87251, 92044
   ];
 
   const ctx = document.getElementById("liqChart").getContext("2d");
@@ -280,9 +280,10 @@ function initChart() {
 }
 
 // ---- Scenario Calculator ----
-/** Monatliche Fixlast lt. Finanzplan: Ø Jahr 1–2 vs. ab J3 inkl. Finanzierung (~770 € auf 5.900 € Betrieb). Preis Slider = € pro Einheit (45 min). */
-const SCENARIO_FIX_J12 = 5240;
-const SCENARIO_FIX_J3 = 6670;
+/** Monatliche Fixlast lt. GuV/Liquidität (Juni 2026): M 1–12 ohne Miete (Vorauszahlung), ab M 13 inkl. Miete. */
+const SCENARIO_FIX_M1_12_MIN = 2406;
+const SCENARIO_FIX_M1_12 = 4006;
+const SCENARIO_FIX_AB_M13 = 6463;
 
 /** Kleinste ganzzahlige Auslastung %, bei der round(kap×p/100)×preis die Fixlast deckt (entspricht Szenario-Slider & Gewinnanzeige). */
 function minAuslastPercentForBreakEven(fixEur, preisEur, kapUnits) {
@@ -310,13 +311,15 @@ function calcScenario() {
   const stunden = Math.round(kap * ausl / 100);
   const umsatz  = stunden * preis;
 
-  const beH12 = Math.ceil(SCENARIO_FIX_J12 / preis);
-  const beH3  = Math.ceil(SCENARIO_FIX_J3 / preis);
-  const bePct12 = minAuslastPercentForBreakEven(SCENARIO_FIX_J12, preis, kap);
-  const bePct3  = minAuslastPercentForBreakEven(SCENARIO_FIX_J3, preis, kap);
+  const beH12Min = Math.ceil(SCENARIO_FIX_M1_12_MIN / preis);
+  const beH12 = Math.ceil(SCENARIO_FIX_M1_12 / preis);
+  const beH13 = Math.ceil(SCENARIO_FIX_AB_M13 / preis);
+  const bePct12Min = minAuslastPercentForBreakEven(SCENARIO_FIX_M1_12_MIN, preis, kap);
+  const bePct12 = minAuslastPercentForBreakEven(SCENARIO_FIX_M1_12, preis, kap);
+  const bePct13 = minAuslastPercentForBreakEven(SCENARIO_FIX_AB_M13, preis, kap);
 
-  const gewinnJ12 = umsatz - SCENARIO_FIX_J12;
-  const gewinnJ3  = umsatz - SCENARIO_FIX_J3;
+  const gewinnM112 = umsatz - SCENARIO_FIX_M1_12;
+  const gewinnAbM13 = umsatz - SCENARIO_FIX_AB_M13;
 
   const setTxt = (id, text) => {
     const el = document.getElementById(id);
@@ -328,20 +331,21 @@ function calcScenario() {
   setTxt("r-jahres", (umsatz * 12).toLocaleString("de-DE") + " €");
   setTxt("r-kap", kap.toLocaleString("de-DE") + " Einh.");
 
-  setTxt("r-be-j12", `${bePct12} % (${beH12} Einh.)`);
-  setTxt("r-be-j3", `${bePct3} % (${beH3} Einh.)`);
+  setTxt("r-be-m112", `ab ${bePct12Min} % (${beH12Min} Einh.)`);
+  setTxt("r-be-m112-hi", `bis ${bePct12} % (${beH12} Einh.)`);
+  setTxt("r-be-m13", `${bePct13} % (${beH13} Einh.)`);
 
   const gEl = document.getElementById("r-gewinn");
   if (gEl) {
-    gEl.textContent = (gewinnJ12 >= 0 ? "+" : "") + gewinnJ12.toLocaleString("de-DE") + " €";
-    gEl.style.color = gewinnJ12 >= 0 ? "#22c55e" : "#ef4444";
+    gEl.textContent = (gewinnM112 >= 0 ? "+" : "") + gewinnM112.toLocaleString("de-DE") + " €";
+    gEl.style.color = gewinnM112 >= 0 ? "#22c55e" : "#ef4444";
   }
-  const g3 = document.getElementById("r-gewinn-j3");
+  const g3 = document.getElementById("r-gewinn-m13");
   if (g3) {
     g3.textContent =
-      "ab J3 (6.670 €): " +
-      (gewinnJ3 >= 0 ? "+" : "") +
-      gewinnJ3.toLocaleString("de-DE") +
+      "ab M 13 (6.463 €): " +
+      (gewinnAbM13 >= 0 ? "+" : "") +
+      gewinnAbM13.toLocaleString("de-DE") +
       " €";
   }
 }
